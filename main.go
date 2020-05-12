@@ -17,6 +17,7 @@ import (
 var (
 	sha1ver   string // sha1 revision used to build the program
 	buildTime string // Time and date for executable was built
+	release string
 )
 
 type Config struct {
@@ -37,7 +38,7 @@ func main() {
 	flag.Parse()
 
 	if *version {
-		fmt.Printf("Build on %s from sha1 %s\n", buildTime, sha1ver)
+		fmt.Printf("Release %s build on %s from rev %s\n",release, buildTime, sha1ver)
 		os.Exit(2)
 	}
 
