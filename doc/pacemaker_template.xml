@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zabbix_export>
+    <version>4.4</version>
+    <date>2020-05-12T17:24:33Z</date>
+    <groups>
+        <group>
+            <name>Templates - Database</name>
+        </group>
+    </groups>
+    <templates>
+        <template>
+            <template>Template Pacemaker</template>
+            <name>Template Pacemaker</name>
+            <description>Template to monitor pacemaker cluster nodes and services</description>
+            <groups>
+                <group>
+                    <name>Templates - Database</name>
+                </group>
+            </groups>
+            <applications>
+                <application>
+                    <name>Pacemaker</name>
+                </application>
+            </applications>
+            <items>
+                <item>
+                    <name>Pacemaker Discover</name>
+                    <key>pacemaker.discover[{HOST.HOST},{$ZABBIX_PROXY}]</key>
+                    <delay>1h</delay>
+                    <history>0</history>
+                    <trends>0</trends>
+                    <value_type>TEXT</value_type>
+                    <description>Zabbix Agent item that trigger a discovery</description>
+                    <applications>
+                        <application>
+                            <name>Pacemaker</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Pacemaker Node - Nodes Online</name>
+                    <type>TRAP</type>
+                    <key>pacemaker.node.online</key>
+                    <delay>0</delay>
+                    <history>30d</history>
+                    <trends>0</trends>
+                    <applications>
+                        <application>
+                            <name>Pacemaker</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Pacemaker Node - Nodes Total</name>
+                    <type>TRAP</type>
+                    <key>pacemaker.node.total</key>
+                    <delay>0</delay>
+                    <history>30d</history>
+                    <trends>0</trends>
+                    <applications>
+                        <application>
+                            <name>Pacemaker</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Pacemaker Poller</name>
+                    <key>pacemaker.poll[{HOST.HOST},{$ZABBIX_PROXY}]</key>
+                    <history>0</history>
+                    <trends>0</trends>
+                    <value_type>TEXT</value_type>
+                    <description>Zabbix Agent item that trigger traps to be sent</description>
+                    <applications>
+                        <application>
+                            <name>Pacemaker</name>
+                        </application>
+                    </applications>
+                    <triggers>
+                        <trigger>
+                            <expression>{nodata(5m)}=0</expression>
+                            <name>Pacemaker - No data from witness node for 5 minutes</name>
+                            <url>https://cwiki.nyxgg.com/x/S4lRBQ</url>
+                            <priority>HIGH</priority>
+                            <description>Pacemaker poller don't return data</description>
+                        </trigger>
+                    </triggers>
+                </item>
+            </items>
+            <discovery_rules>
+                <discovery_rule>
+                    <name>Node Discovery</name>
+                    <type>TRAP</type>
+                    <key>pacemaker.discover.node</key>
+                    <delay>0</delay>
+                    <lifetime>7d</lifetime>
+                    <description>Discover nodes in Pacemaker cluster</description>
+                    <item_prototypes>
+                        <item_prototype>
+                            <name>Pacemaker Node - {#NAME} - Maintanence Status</name>
+                            <type>TRAP</type>
+                            <key>pacemaker.node.maint[{#NAME}]</key>
+                            <delay>0</delay>
+                            <history>30d</history>
+                            <trends>0</trends>
+                            <applications>
+                                <application>
+                                    <name>Pacemaker</name>
+                                </application>
+                            </applications>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Pacemaker Node - {#NAME} - Online Status</name>
+                            <type>TRAP</type>
+                            <key>pacemaker.node.online[{#NAME}]</key>
+                            <delay>0</delay>
+                            <history>30d</history>
+                            <trends>0</trends>
+                            <applications>
+                                <application>
+                                    <name>Pacemaker</name>
+                                </application>
+                            </applications>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <expression>{last(#3)}=0</expression>
+                                    <name>Pacemaker - Node {#NAME} Offline</name>
+                                    <url>https://cwiki.nyxgg.com/x/S4lRBQ</url>
+                                    <priority>HIGH</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Pacemaker Node - {#NAME} - Shutdown Status</name>
+                            <type>TRAP</type>
+                            <key>pacemaker.node.shutdown[{#NAME}]</key>
+                            <delay>0</delay>
+                            <history>30d</history>
+                            <trends>0</trends>
+                            <applications>
+                                <application>
+                                    <name>Pacemaker</name>
+                                </application>
+                            </applications>
+                        </item_prototype>
+                    </item_prototypes>
+                </discovery_rule>
+                <discovery_rule>
+                    <name>Resource Discovery</name>
+                    <type>TRAP</type>
+                    <key>pacemaker.discover.resources</key>
+                    <delay>0</delay>
+                    <lifetime>7d</lifetime>
+                    <description>Discover resources in Pacemaker cluster</description>
+                    <item_prototypes>
+                        <item_prototype>
+                            <name>Pacemaker Group: {#GROUP}, Resource: {#RES} - Active Status</name>
+                            <type>TRAP</type>
+                            <key>pacemaker.resource.active[{#GROUP}.{#RES}]</key>
+                            <delay>0</delay>
+                            <history>30d</history>
+                            <trends>0</trends>
+                            <applications>
+                                <application>
+                                    <name>Pacemaker</name>
+                                </application>
+                            </applications>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Pacemaker Group: {#GROUP}, Resource: {#RES} - Failed Status</name>
+                            <type>TRAP</type>
+                            <key>pacemaker.resource.failed[{#GROUP}.{#RES}]</key>
+                            <delay>0</delay>
+                            <history>30d</history>
+                            <trends>0</trends>
+                            <applications>
+                                <application>
+                                    <name>Pacemaker</name>
+                                </application>
+                            </applications>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <expression>{last(#3)}=1</expression>
+                                    <name>Pacemaker - Resource {#RES} in group {#GROUP} in status failed</name>
+                                    <url>https://cwiki.nyxgg.com/x/S4lRBQ</url>
+                                    <priority>HIGH</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                    </item_prototypes>
+                </discovery_rule>
+            </discovery_rules>
+            <macros>
+                <macro>
+                    <macro>{$ZABBIX_PROXY}</macro>
+                    <value>127.0.0.1</value>
+                    <description>Proxy receiving the local zabbix traps</description>
+                </macro>
+            </macros>
+        </template>
+    </templates>
+    <triggers>
+        <trigger>
+            <expression>{Template Pacemaker:pacemaker.node.online.last()}&lt;{Template Pacemaker:pacemaker.node.total.last()}</expression>
+            <name>Pacemaker - Cluster Degraded - Nodes Offline</name>
+            <url>https://cwiki.nyxgg.com/x/S4lRBQ</url>
+            <priority>HIGH</priority>
+        </trigger>
+    </triggers>
+</zabbix_export>
