@@ -15,8 +15,8 @@ import (
 )
 
 var (
-	sha1ver   string // sha1 revision used to build the program
-	buildTime string // Time and date for executable was built
+	sha1ver   string
+	buildTime string
 	release string
 )
 

@@ -1,4 +1,4 @@
-module zabbix-pacemaker
+module github.com/marstid/zabbix-pacemaker/v1
 
 go 1.14
 
