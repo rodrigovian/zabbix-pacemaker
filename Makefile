@@ -36,3 +36,6 @@
     # Cross compilation
     build-linux:
 		CGO_ENABLED=0 GOOS=linux GOARCH=amd64 $(GOBUILD) -o $(BINARY_LINUX) -trimpath -ldflags "-X main.sha1ver=$(VERSIONGIT) -X main.release=$(VERSION) -X main.buildTime=$(NOW)" -v
+
+    release:
+		CGO_ENABLED=0 GOOS=linux GOARCH=amd64 $(GOBUILD) -o release/$(BINARY_LINUX)_$(VERSION) -trimpath -ldflags "-X main.sha1ver=$(VERSIONGIT) -X main.release=$(VERSION) -X main.buildTime=$(NOW)" -v
