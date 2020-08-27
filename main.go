@@ -17,7 +17,7 @@ import (
 var (
 	sha1ver   string
 	buildTime string
-	release string
+	release   string
 )
 
 type Config struct {
@@ -38,7 +38,7 @@ func main() {
 	flag.Parse()
 
 	if *version {
-		fmt.Printf("Release %s build on %s from rev %s\n",release, buildTime, sha1ver)
+		fmt.Printf("Release %s build on %s from rev %s\n", release, buildTime, sha1ver)
 		os.Exit(2)
 	}
 
@@ -64,6 +64,7 @@ func main() {
 	if *poll {
 		resourceData(&data)
 		nodeData(&data)
+		clusterData(&data)
 	}
 }
 
@@ -146,6 +147,19 @@ func nodeData(mon *CrmMon) bool {
 	}
 	mData = append(mData, NewMetric(cfg.ZabbixTargetHost, "pacemaker.node.online", strconv.Itoa(online), time.Now().Unix()))
 	mData = append(mData, NewMetric(cfg.ZabbixTargetHost, "pacemaker.node.total", strconv.Itoa(len(mon.Nodes.Node)), time.Now().Unix()))
+
+	SendMetrics(cfg.ZabbixProxy, mData, "Node", cfg.Debug)
+	return true
+}
+
+func clusterData(mon *CrmMon) bool {
+	var mData []*Metric
+
+	if mon.Summary.ClusterOptions.MaintenanceMode {
+		mData = append(mData, NewMetric(cfg.ZabbixTargetHost, "pacemaker.cluster.maint", "1", time.Now().Unix()))
+	} else {
+		mData = append(mData, NewMetric(cfg.ZabbixTargetHost, "pacemaker.cluster.maint", "0", time.Now().Unix()))
+	}
 
 	SendMetrics(cfg.ZabbixProxy, mData, "Node", cfg.Debug)
 	return true

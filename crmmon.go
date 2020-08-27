@@ -44,10 +44,10 @@ type CrmMon struct {
 		} `xml:"resources_configured"`
 		ClusterOptions struct {
 			Text             string `xml:",chardata"`
-			StonithEnabled   string `xml:"stonith-enabled,attr"`
-			SymmetricCluster string `xml:"symmetric-cluster,attr"`
+			StonithEnabled   bool   `xml:"stonith-enabled,attr"`
+			SymmetricCluster bool   `xml:"symmetric-cluster,attr"`
 			NoQuorumPolicy   string `xml:"no-quorum-policy,attr"`
-			MaintenanceMode  string `xml:"maintenance-mode,attr"`
+			MaintenanceMode  bool   `xml:"maintenance-mode,attr"`
 		} `xml:"cluster_options"`
 	} `xml:"summary"`
 	Nodes struct {
