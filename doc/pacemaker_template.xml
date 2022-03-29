@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>4.4</version>
-    <date>2020-05-12T17:24:33Z</date>
+    <date>2022-03-29T12:10:36Z</date>
     <groups>
         <group>
             <name>Templates - Database</name>
@@ -41,6 +41,32 @@
                     <name>Pacemaker Node - Nodes Online</name>
                     <type>TRAP</type>
                     <key>pacemaker.node.online</key>
+                    <delay>0</delay>
+                    <history>30d</history>
+                    <trends>0</trends>
+                    <applications>
+                        <application>
+                            <name>Pacemaker</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Pacemaker Node - Nodes Standby</name>
+                    <type>TRAP</type>
+                    <key>pacemaker.node.standby</key>
+                    <delay>0</delay>
+                    <history>30d</history>
+                    <trends>0</trends>
+                    <applications>
+                        <application>
+                            <name>Pacemaker</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Pacemaker Node - Nodes Standby On Fail</name>
+                    <type>TRAP</type>
+                    <key>pacemaker.node.standby_onfail</key>
                     <delay>0</delay>
                     <history>30d</history>
                     <trends>0</trends>
@@ -142,33 +168,10 @@
                                 </application>
                             </applications>
                         </item_prototype>
-                    </item_prototypes>
-                </discovery_rule>
-                <discovery_rule>
-                    <name>Resource Discovery</name>
-                    <type>TRAP</type>
-                    <key>pacemaker.discover.resources</key>
-                    <delay>0</delay>
-                    <lifetime>7d</lifetime>
-                    <description>Discover resources in Pacemaker cluster</description>
-                    <item_prototypes>
                         <item_prototype>
-                            <name>Pacemaker Group: {#GROUP}, Resource: {#RES} - Active Status</name>
+                            <name>Pacemaker Node - {#NAME} - Standby Status</name>
                             <type>TRAP</type>
-                            <key>pacemaker.resource.active[{#GROUP}.{#RES}]</key>
-                            <delay>0</delay>
-                            <history>30d</history>
-                            <trends>0</trends>
-                            <applications>
-                                <application>
-                                    <name>Pacemaker</name>
-                                </application>
-                            </applications>
-                        </item_prototype>
-                        <item_prototype>
-                            <name>Pacemaker Group: {#GROUP}, Resource: {#RES} - Failed Status</name>
-                            <type>TRAP</type>
-                            <key>pacemaker.resource.failed[{#GROUP}.{#RES}]</key>
+                            <key>pacemaker.node.standby[{#NAME}]</key>
                             <delay>0</delay>
                             <history>30d</history>
                             <trends>0</trends>
@@ -180,9 +183,112 @@
                             <trigger_prototypes>
                                 <trigger_prototype>
                                     <expression>{last(#3)}=1</expression>
-                                    <name>Pacemaker - Resource {#RES} in group {#GROUP} in status failed</name>
+                                    <name>Pacemaker - Node {#NAME} Standby</name>
+                                    <url>https://cwiki.nyxgg.com/x/S4lRBQ</url>
+                                    <priority>INFO</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Pacemaker Node - {#NAME} - Standby On Fail Status</name>
+                            <type>TRAP</type>
+                            <key>pacemaker.node.standby_onfail[{#NAME}]</key>
+                            <delay>0</delay>
+                            <history>30d</history>
+                            <trends>0</trends>
+                            <applications>
+                                <application>
+                                    <name>Pacemaker</name>
+                                </application>
+                            </applications>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <expression>{last(#3)}=1</expression>
+                                    <name>Pacemaker - Node {#NAME} Standby On Fail</name>
+                                    <url>https://cwiki.nyxgg.com/x/S4lRBQ</url>
+                                    <priority>WARNING</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                    </item_prototypes>
+                </discovery_rule>
+                <discovery_rule>
+                    <name>Resource Discovery</name>
+                    <type>TRAP</type>
+                    <key>pacemaker.discover.resources</key>
+                    <delay>0</delay>
+                    <lifetime>7d</lifetime>
+                    <description>Discover resources in Pacemaker cluster</description>
+                    <item_prototypes>
+                        <item_prototype>
+                            <name>Pacemaker Resource: {#RES} - Active Status</name>
+                            <type>TRAP</type>
+                            <key>pacemaker.resource.active[{#RES}]</key>
+                            <delay>0</delay>
+                            <history>30d</history>
+                            <trends>0</trends>
+                            <applications>
+                                <application>
+                                    <name>Pacemaker</name>
+                                </application>
+                            </applications>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Pacemaker Resource: {#RES} - Failed Status</name>
+                            <type>TRAP</type>
+                            <key>pacemaker.resource.failed[{#RES}]</key>
+                            <delay>0</delay>
+                            <history>30d</history>
+                            <trends>0</trends>
+                            <applications>
+                                <application>
+                                    <name>Pacemaker</name>
+                                </application>
+                            </applications>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <expression>{last(#3)}=1</expression>
+                                    <name>Pacemaker - Resource {#RES} in status failed</name>
                                     <url>https://cwiki.nyxgg.com/x/S4lRBQ</url>
                                     <priority>HIGH</priority>
+                                </trigger_prototype>
+                            </trigger_prototypes>
+                        </item_prototype>
+                    </item_prototypes>
+                </discovery_rule>
+                <discovery_rule>
+                    <name>Resource Discovery Group</name>
+                    <type>TRAP</type>
+                    <key>pacemaker.discover.resourcesgroup</key>
+                    <delay>0</delay>
+                    <lifetime>7d</lifetime>
+                    <description>Discover resources in Pacemaker cluster</description>
+                    <item_prototypes>
+                        <item_prototype>
+                            <name>Pacemaker Resource: {#RES} in Group {#GROUP} - Active Status</name>
+                            <type>TRAP</type>
+                            <key>pacemaker.resourcegroup.active[{#GROUP}.{#RES}]</key>
+                            <delay>0</delay>
+                            <applications>
+                                <application>
+                                    <name>Pacemaker</name>
+                                </application>
+                            </applications>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Pacemaker Resource: {#RES} in Group {#GROUP} - Failed Status</name>
+                            <type>TRAP</type>
+                            <key>pacemaker.resourcegroup.failed[{#GROUP}.{#RES}]</key>
+                            <delay>0</delay>
+                            <applications>
+                                <application>
+                                    <name>Pacemaker</name>
+                                </application>
+                            </applications>
+                            <trigger_prototypes>
+                                <trigger_prototype>
+                                    <expression>{last(#3)}=1</expression>
+                                    <name>Pacemaker - Resource {#RES} in group {#GROUP} in status failed</name>
                                 </trigger_prototype>
                             </trigger_prototypes>
                         </item_prototype>

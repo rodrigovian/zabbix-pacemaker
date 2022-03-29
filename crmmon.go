@@ -57,8 +57,8 @@ type CrmMon struct {
 			Name             string `xml:"name,attr"`
 			ID               string `xml:"id,attr"`
 			Online           bool   `xml:"online,attr"`
-			Standby          string `xml:"standby,attr"`
-			StandbyOnfail    string `xml:"standby_onfail,attr"`
+			Standby          bool   `xml:"standby,attr"`
+			StandbyOnfail    bool   `xml:"standby_onfail,attr"`
 			Maintenance      bool   `xml:"maintenance,attr"`
 			Pending          string `xml:"pending,attr"`
 			Unclean          string `xml:"unclean,attr"`
@@ -71,6 +71,25 @@ type CrmMon struct {
 	} `xml:"nodes"`
 	Resources struct {
 		Text  string `xml:",chardata"`
+		Resource []struct {
+			Text           string `xml:",chardata"`
+			ID             string `xml:"id,attr"`
+			ResourceAgent  string `xml:"resource_agent,attr"`
+			Role           string `xml:"role,attr"`
+			Active         bool   `xml:"active,attr"`
+			Orphaned       bool   `xml:"orphaned,attr"`
+			Blocked        bool   `xml:"blocked,attr"`
+			Managed        bool   `xml:"managed,attr"`
+			Failed         bool   `xml:"failed,attr"`
+			FailureIgnored bool   `xml:"failure_ignored,attr"`
+			NodesRunningOn string `xml:"nodes_running_on,attr"`
+			Node           struct {
+				Text   string `xml:",chardata"`
+				Name   string `xml:"name,attr"`
+				ID     string `xml:"id,attr"`
+				Cached string `xml:"cached,attr"`
+			} `xml:"node"`
+		} `xml:"resource"`
 		Group []struct {
 			Text            string `xml:",chardata"`
 			ID              string `xml:"id,attr"`
